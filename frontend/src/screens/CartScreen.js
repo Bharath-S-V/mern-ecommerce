@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import MessageBox from '../components/MessageBox';
-import { addToCart } from '../actions/cartActions';
+import { addToCart, removeFromCart } from '../actions/cartActions';
 import { useParams, useLocation } from 'react-router-dom'; // Import useParams and useLocation
 import { useNavigate } from 'react-router-dom';
 
@@ -21,6 +21,7 @@ export default function CartScreen() {
   }, [dispatch, id, qty]);
   const removeFromCartHandler = (id) => {
     // delete action
+    dispatch(removeFromCart(id));
   };
   const Navigate = useNavigate();
   const checkoutHandler = () => {
