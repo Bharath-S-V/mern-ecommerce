@@ -1,6 +1,7 @@
 import React from 'react';
 import CartScreen from './screens/CartScreen';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import AdminRoute from './components/AdminRoute';
 import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
@@ -104,6 +105,10 @@ function App() {
               path="/profile"
               element={<ProfileScreen />}
             ></PrivateRoute>
+            <AdminRoute
+              path="/productlist"
+              element={<ProductScreen />}
+            ></AdminRoute>
           </Routes>
         </main>
         <footer className="row center">All right reserved</footer>
