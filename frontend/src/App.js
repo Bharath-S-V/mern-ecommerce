@@ -1,6 +1,7 @@
 import React from 'react';
 import CartScreen from './screens/CartScreen';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +33,7 @@ function App() {
                 <span className="badge">{cartItems.length}</span>
               )}
             </Link>
-             {userInfo ? (
+            {userInfo ? (
               <div className="dropdown">
                 <Link to="#">
                   {userInfo.name} <i className="fa fa-caret-down"></i>{' '}
@@ -56,6 +57,7 @@ function App() {
             <Route path="/cart/:id?" element={<CartScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/" element={<HomeScreen />} />
+            <Route path="/register" element={<RegisterScreen />}></Route>
           </Routes>
         </main>
         <footer className="row center">All right reserved</footer>
