@@ -1,18 +1,60 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { listOrderMine } from '../actions/orderActions';
+import React, { useContext, useEffect, useReducer } from 'react';
+import { Helmet } from 'react-helmet-async';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { Store } from '../Store';
+import { getError } from '../utils';
+import Button from 'react-bootstrap/esm/Button';
 
-export default function OrderHistoryScreen(props) {
-  const orderMineList = useSelector((state) => state.orderMineList);
-  const { loading, error, orders } = orderMineList;
-  const dispatch = useDispatch();
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'FETCH_REQUEST':
+      return { ...state, loading: true };
+    case 'FETCH_SUCCESS':
+      return { ...state, orders: action.payload, loading: false };
+    case 'FETCH_FAIL':
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export default function OrderHistoryScreen() {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const navigate = useNavigate();
+
+  const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
+    loading: true,
+    error: '',
+  });
   useEffect(() => {
-    dispatch(listOrderMine());
-  }, [dispatch]);
+    const fetchData = async () => {
+      dispatch({ type: 'FETCH_REQUEST' });
+      try {
+        const { data } = await axios.get(
+          `/api/orders/mine`,
+
+          { headers: { Authorization: `Bearer ${userInfo.token}` } }
+        );
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+      } catch (error) {
+        dispatch({
+          type: 'FETCH_FAIL',
+          payload: getError(error),
+        });
+      }
+    };
+    fetchData();
+  }, [userInfo]);
   return (
     <div>
+      <Helmet>
+        <title>Order History</title>
+      </Helmet>
+
       <h1>Order History</h1>
       {loading ? (
         <LoadingBox></LoadingBox>
@@ -43,15 +85,15 @@ export default function OrderHistoryScreen(props) {
                     : 'No'}
                 </td>
                 <td>
-                  <button
+                  <Button
                     type="button"
-                    className="small"
+                    variant="light"
                     onClick={() => {
-                      props.history.push(`/order/${order._id}`);
+                      navigate(`/order/${order._id}`);
                     }}
                   >
                     Details
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
